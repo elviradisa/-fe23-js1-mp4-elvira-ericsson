@@ -60,6 +60,10 @@ h1 {
     color: white;
 }
 
+.movieList:hover {
+    background-color: rgba(44, 48, 61, 0.529);
+}
+
 .personList {
     list-style-type: none;
     background-color: rgb(44, 48, 61);

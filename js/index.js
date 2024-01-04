@@ -129,6 +129,8 @@ function searchPersonHTML (people) {
         const imgURL = `https://image.tmdb.org/t/p/w500${imgPath}`;
         const personName = person.name;
         const knownForDepartment = person.known_for_department;
+        // .map - metod. skapar ny array av 'known-for'-arrayen, för varje objekt returneras
+        //        movie-title (Movie) eller movie-name (TV) och listar de separerat med komma
         const knownFor = person.known_for.map(movie => movie.title || movie.name).join(', ');
 
         personHTML += `
@@ -144,9 +146,7 @@ function searchPersonHTML (people) {
 }
 
 const topRatedButton = document.querySelector('#topRated');
-topRatedButton.addEventListener('click', function() {
-    fetchTopRatedMovies();
-})
+topRatedButton.addEventListener('click', fetchTopRatedMovies)
 
 function fetchTopRatedMovies () {
     const urlTopRatedMovies = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1`;
@@ -163,17 +163,20 @@ function fetchTopRatedMovies () {
             }
         })
         .then(response => {
+            // .slice - metod. skapar en ny array som innehåller endast elementen från index 0 - 10
             const displayTenMovies = response.results.slice(0, 10);
+            // .map - metod. för varje objekt i 'displayTenMovies' anropas 'createMovieHTML'
             const topRatedMoviesHTML = displayTenMovies.map(movie => createMoviesHTML(movie)).join('');
+            // .join - metod. efter .map skapat en array med HTML-strängar, 
+            //           kombinerar .join de till en enda lång sträng.
+            //        '' innebär att strängarna ska sammanfogas, inget ska separera dem
             resultDiv.innerHTML = topRatedMoviesHTML;
         })
         .catch(displayError);
 }
 
 const mostPopularButton = document.querySelector('#mostPopular');
-mostPopularButton.addEventListener('click', function() {
-    fetchMostPopularMovies();
-})
+mostPopularButton.addEventListener('click', fetchMostPopularMovies)
 
 function fetchMostPopularMovies () {
     const urlMostPopularMovies = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1`;
@@ -199,9 +202,10 @@ function fetchMostPopularMovies () {
 
 function displayError (error) {
 
-    if (error.message === '401' || error.message === '404') {
-        errorMessage.textContent = 'Network error...'
+    if (error.message === '404') {
+        errorMessage.textContent = 'Movie or person not found... Please try again!'
     } else {
-        errorMessage.textContent = `Error: ${error.message}`;
+        errorMessage.textContent = 'Network error...';
+        // allMovies.display = 'none';
     }
 }
