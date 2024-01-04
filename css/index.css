@@ -16,6 +16,23 @@ h1 {
     padding: 20px;
 }
 
+#form {
+    background-color: rgb(44, 48, 61);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+ }
+
+.searchContainer {
+    padding: 5px;
+ }
+
+#searchInput {
+    margin-right: 5px;
+}
+
 .personLabel {
     margin-right: 10px;
 }
@@ -92,19 +109,7 @@ h1 {
     height: 50px;
  }
 
- #form {
-    background-color: rgb(44, 48, 61);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 10px;
+ .errorMessage {
+    text-align: center;
+    color: rgb(188, 188, 188);
  }
-
-.searchContainer {
-    padding: 5px;
- }
-
-#searchInput {
-    margin-right: 5px;
-}

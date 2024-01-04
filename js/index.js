@@ -19,13 +19,14 @@ const options = {
 };
 
 const urlMoviesDiscover = 'https://api.themoviedb.org/3/discover/movie';
+const errorMessage = document.querySelector('.errorMessage');
 
 fetch(urlMoviesDiscover, options)
   .then(response => {
     if(response.ok) {
         return response.json();
     } else {
-        errorMessage.innerHTML = 'Something went wrong...';
+        throw ('Something went wrong...')
     }
 })
   .then(data => displayMovies(data))
@@ -62,7 +63,6 @@ function displayMovies (data) {
 
 const form = document.querySelector('#form');
 const resultDiv = document.querySelector('.results');
-const errorMessage = document.querySelector('.errorMessage');
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -83,7 +83,7 @@ form.addEventListener('submit', (event) => {
             if (response.ok) {
                 return response.json();
             } else {
-                displayError
+                throw ('Something went wrong...')
             }
         })
         .then(data => {
@@ -95,9 +95,10 @@ form.addEventListener('submit', (event) => {
                 resultDiv.innerHTML = searchPersonHTML(data.results);
             } 
         })
-        .catch(
-            errorMessage.innerHTML = 'Something went wrong...'
-        );
+        .catch(error => {
+            console.error(error);
+            errorMessage.innerHTML = 'Network error...';
+        });
     form.reset();    
 });
 
@@ -164,7 +165,7 @@ function fetchTopRatedMovies () {
             if(response.ok) {
                 return response.json();
             } else {
-                errorMessage.innerHTML = 'Something went wrong...';
+                throw ('Something went wrong...')
             }
         })
         .then(response => {
@@ -204,16 +205,17 @@ function fetchMostPopularMovies () {
             const mostPopularMoviesHTML = showTenMovies.map(movie => createMoviesHTML(movie)).join('');
             resultDiv.innerHTML = mostPopularMoviesHTML;
         })
-        .catch(
-            errorMessage.innerHTML = 'Network error...'
-        );
+        .catch(error => {
+            console.error(error);
+            errorMessage.innerHTML = 'Network error...';
+        });
 }
 
 function displayError (error) {
     const errorMessage = document.querySelector('.errorMessage');
 
-    if (error.message.includes('null') || error.message === '404') {
-        errorMessage.textContent = 'Movie or person not found, try again!'
+    if (error.message === '401' || error.message === '404') {
+        errorMessage.textContent = 'Network error...'
     } else {
         errorMessage.textContent = `Error: ${error.message}`;
     }
