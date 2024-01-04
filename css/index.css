@@ -1,0 +1,110 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(24, 29, 44);
+}
+
+h1 {
+    color: white;
+    padding: 20px;
+    margin-bottom: 5px;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.personLabel {
+    margin-right: 10px;
+}
+
+.imageContainer {
+    width: 100%;
+}
+
+.results {
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    padding: 10px;
+}
+
+.movieList {
+    list-style-type: none;
+    background-color: rgb(44, 48, 61);
+    margin: 10px;
+    padding: 20px;
+    width: 170px;
+    height: auto;
+    border-radius: 10px;
+    flex: 1;
+    color: white;
+}
+
+.personList {
+    list-style-type: none;
+    background-color: rgb(44, 48, 61);
+    margin: 10px;
+    padding: 20px;
+    width: 170px;
+    height: auto;
+    border-radius: 10px;
+    flex: 1;
+    color: white;
+}
+
+.personName {
+    font-size: 12px;
+}
+
+.knownForDepartment {
+    font-size: 10px;
+}
+
+.knownFor {
+    font-size: 10px;
+    color: rgb(129, 129, 129);
+}
+
+ .allImages {
+    width: 100px;
+    height: auto;
+    font-size: 8px;
+    color: blueviolet;
+ }
+
+ .movieTitle {
+    font-size: 12px;
+ }
+
+ .movieOverview {
+    font-size: 10px;
+ }
+
+ .movieReleaseDate {
+    font-size: 10px;
+ }
+
+ .movieButton {
+    width: 100px;
+    height: 50px;
+ }
+
+ #form {
+    background-color: rgb(44, 48, 61);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+ }
+
+.searchContainer {
+    padding: 5px;
+ }
+
+#searchInput {
+    margin-right: 5px;
+}
