@@ -19,7 +19,6 @@ const options = {
 };
 
 const urlMoviesDiscover = 'https://api.themoviedb.org/3/discover/movie';
-const errorMessage = document.querySelector('.errorMessage');
 
 fetch(urlMoviesDiscover, options)
   .then(response => {
@@ -30,10 +29,7 @@ fetch(urlMoviesDiscover, options)
     }
 })
   .then(data => displayMovies(data))
-  .catch(error => {
-    console.error(error);
-    errorMessage.innerHTML = 'Network error...';
-});
+  .catch(displayError);
 
 function createMoviesHTML (movie) {
     const imgPath = movie.poster_path;
@@ -63,6 +59,8 @@ function displayMovies (data) {
 
 const form = document.querySelector('#form');
 const resultDiv = document.querySelector('.results');
+const errorMessage = document.querySelector('.errorMessage');
+errorMessage.innerHTML = '';
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -83,7 +81,7 @@ form.addEventListener('submit', (event) => {
             if (response.ok) {
                 return response.json();
             } else {
-                throw ('Something went wrong...')
+                throw ('Movie or person not found, try again!')
             }
         })
         .then(data => {
@@ -95,10 +93,7 @@ form.addEventListener('submit', (event) => {
                 resultDiv.innerHTML = searchPersonHTML(data.results);
             } 
         })
-        .catch(error => {
-            console.error(error);
-            errorMessage.innerHTML = 'Network error...';
-        });
+        .catch(displayError);
     form.reset();    
 });
 
@@ -156,9 +151,8 @@ topRatedButton.addEventListener('click', function() {
 function fetchTopRatedMovies () {
     const urlTopRatedMovies = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1`;
     const resultDiv = document.querySelector('.results');
-    const errorMessage = document.querySelector('.errorMessage');
+
     resultDiv.innerHTML = '';
-    errorMessage.innerHTML = '';
 
     fetch(urlTopRatedMovies, options)
         .then(response => {
@@ -169,14 +163,11 @@ function fetchTopRatedMovies () {
             }
         })
         .then(response => {
-            const showTenMovies = response.results.slice(0, 10);
-            const topRatedMoviesHTML = showTenMovies.map(movie => createMoviesHTML(movie)).join('');
+            const displayTenMovies = response.results.slice(0, 10);
+            const topRatedMoviesHTML = displayTenMovies.map(movie => createMoviesHTML(movie)).join('');
             resultDiv.innerHTML = topRatedMoviesHTML;
         })
-        .catch(error => {
-            console.error(error);
-            errorMessage.innerHTML = 'Network error...';
-        });
+        .catch(displayError);
 }
 
 const mostPopularButton = document.querySelector('#mostPopular');
@@ -187,9 +178,8 @@ mostPopularButton.addEventListener('click', function() {
 function fetchMostPopularMovies () {
     const urlMostPopularMovies = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1`;
     const resultDiv = document.querySelector('.results');
-    const errorMessage = document.querySelector('.errorMessage');
+
     resultDiv.innerHTML = '';
-    errorMessage.innerHTML = '';
 
     fetch(urlMostPopularMovies, options)
         .then(response => {
@@ -198,21 +188,16 @@ function fetchMostPopularMovies () {
             } else {
                 throw ('Something went wrong...')
             }
-            
         })
         .then(response => {
-            const showTenMovies = response.results.slice(0, 10);
-            const mostPopularMoviesHTML = showTenMovies.map(movie => createMoviesHTML(movie)).join('');
+            const displayTenMovies = response.results.slice(0, 10);
+            const mostPopularMoviesHTML = displayTenMovies.map(movie => createMoviesHTML(movie)).join('');
             resultDiv.innerHTML = mostPopularMoviesHTML;
         })
-        .catch(error => {
-            console.error(error);
-            errorMessage.innerHTML = 'Network error...';
-        });
+        .catch(displayError);
 }
 
 function displayError (error) {
-    const errorMessage = document.querySelector('.errorMessage');
 
     if (error.message === '401' || error.message === '404') {
         errorMessage.textContent = 'Network error...'
