@@ -1,11 +1,15 @@
-//vad har varit toligast med projketet?
-//vad har varit mest lärande?
+//vad har varit roligast med projektet?
+//             att se sidan växa fram och att kunna applicera allt de man lärt sig under kursen
+//             kickarna man får när man löser ett problem man suttit med länge
+//vad har varit mest utmanande under projektet?
+//             tidsplaneringen och att lägga upp strukturen rätt från början,
+//             jag kan ha lite svårt att se framfölr mig hur allting ska byggas
+//             upp från början
 //vad hade du gjort annorulunda?
+//            lagt upp min tid bättre och strukturerat projektet bättre så att jag 
+//            fått mer tid till css och finslipa koden
 
 //minst ett valfritt bibliotek, ex jquery, anime, underscore
-
-//innerHTML är okej i JS-filen
-
 
 
 const BEARER_KEY= `eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNTVmYzE0ODI0MDliYjkwN2YxMTYyNWZkOGQ4YTRjYiIsInN1YiI6IjY1ODAwNTQyMjI2YzU2MDdmZTllMjQ2MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.TyCnk5WZxRyhHuUzXvloHUkQtKFLcCclGitWEz-DGG0`;
@@ -81,7 +85,7 @@ form.addEventListener('submit', (event) => {
             if (response.ok) {
                 return response.json();
             } else {
-                throw ('Movie or person not found, try again!')
+                throw (response)
             }
         })
         .then(data => {
@@ -131,14 +135,28 @@ function searchPersonHTML (people) {
         const knownForDepartment = person.known_for_department;
         // .map - metod. skapar ny array av 'known-for'-arrayen, för varje objekt returneras
         //        movie-title (Movie) eller movie-name (TV) och listar de separerat med komma
-        const knownFor = person.known_for.map(movie => movie.title || movie.name).join(', ');
+
+        let movie = [];
+        let tv = [];
+
+        for (const movieOrTv of person.known_for) {
+            if (movieOrTv.media_type === 'movie') {
+                movie.push(movieOrTv.title);
+            } else if (movieOrTv.media_type === 'tv') {
+                tv.push(movieOrTv.name);
+            }
+        }
+
+        const movieList = movie.join('<br>Movie: ');
+        const tvList = tv.join('<br>TV: ');
 
         personHTML += `
             <li class="personList">
                 <img src="${imgURL}" alt="Image of ${personName}" class="allImages">
                 <h2 class="personName">${personName}</h2>
                 <p class="knownForDepartment">${knownForDepartment}</p>
-                <p class="knownFor">Known for:  ${knownFor}</p>
+                <p class="knownFor">Movie: ${movieList}</p>
+                <p class="knownFor">TV: ${tvList}</p>
             </li>
         `;
     });
@@ -201,11 +219,11 @@ function fetchMostPopularMovies () {
 }
 
 function displayError (error) {
-
-    if (error.message === '404') {
-        errorMessage.textContent = 'Movie or person not found... Please try again!'
+    const errorMessage = document.querySelector('.errorMessage');
+    console.log(error);
+    if (error.message === 404) {
+        errorMessage.innerText = 'Movie or person not found... Please try again!'
     } else {
-        errorMessage.textContent = 'Network error...';
-        // allMovies.display = 'none';
+        errorMessage.innerText = 'Something went wrong, try again later!';
     }
 }
