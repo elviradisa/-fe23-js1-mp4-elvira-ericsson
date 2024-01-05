@@ -1,7 +1,24 @@
-//
-// Elvira Ericsson
-// Slutprojekt FE23
-//
+/*
+* Elvira Ericsson
+* Slutprojekt FE23
+*
+* The Movie Database
+* Uses The Movie Database API - https://www.themoviedb.org/
+*
+* Fetches top rated movies
+* Fetches most popular movies
+* Fetches movies and people in the movie business matching a user search
+* User can search by movie or person
+*
+* Info displayed for each searched movie:
+*  - title
+*  - release date
+*  - description
+* Info displayed for each searched person:
+*  - name
+*  - department
+*  - list of which movies/TV they are known for
+*/
 
 const BEARER_KEY= `eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNTVmYzE0ODI0MDliYjkwN2YxMTYyNWZkOGQ4YTRjYiIsInN1YiI6IjY1ODAwNTQyMjI2YzU2MDdmZTllMjQ2MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.TyCnk5WZxRyhHuUzXvloHUkQtKFLcCclGitWEz-DGG0`;
 
@@ -12,6 +29,18 @@ const options = {
       Authorization: `Bearer ${BEARER_KEY}`
     }
 };
+
+const h1Animation = {
+    targets: '.h1Animation',
+    translateY: '20px',
+    delay: anime.stagger(200),
+    borderRadius: '50%',
+    direction: 'alternate',
+    easing: 'linear',
+    loop: true,
+}
+anime(h1Animation);
+//https://animejs.com/documentation/#staggeringBasics
 
 const urlMoviesDiscover = 'https://api.themoviedb.org/3/discover/movie';
 
