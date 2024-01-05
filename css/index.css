@@ -1,3 +1,7 @@
+/*
+Elvira Ericsson
+Slutprojekt FE23
+*/
 body {
     margin: 0;
     padding: 0;
@@ -92,7 +96,7 @@ h1 {
 }
 
  .allImages {
-    width: 100px;
+    width: 150px;
     height: auto;
     font-size: 8px;
     color: blueviolet;

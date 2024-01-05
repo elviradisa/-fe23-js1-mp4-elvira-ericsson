@@ -1,16 +1,7 @@
-//vad har varit roligast med projektet?
-//             att se sidan växa fram och att kunna applicera allt de man lärt sig under kursen
-//             kickarna man får när man löser ett problem man suttit med länge
-//vad har varit mest utmanande under projektet?
-//             tidsplaneringen och att lägga upp strukturen rätt från början,
-//             jag kan ha lite svårt att se framfölr mig hur allting ska byggas
-//             upp från början
-//vad hade du gjort annorulunda?
-//            lagt upp min tid bättre och strukturerat projektet bättre så att jag 
-//            fått mer tid till css och finslipa koden
-
-//minst ett valfritt bibliotek, ex jquery, anime, underscore
-
+//
+// Elvira Ericsson
+// Slutprojekt FE23
+//
 
 const BEARER_KEY= `eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNTVmYzE0ODI0MDliYjkwN2YxMTYyNWZkOGQ4YTRjYiIsInN1YiI6IjY1ODAwNTQyMjI2YzU2MDdmZTllMjQ2MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.TyCnk5WZxRyhHuUzXvloHUkQtKFLcCclGitWEz-DGG0`;
 
@@ -29,11 +20,13 @@ fetch(urlMoviesDiscover, options)
     if(response.ok) {
         return response.json();
     } else {
-        throw ('Something went wrong...')
+        throw new Error (response.status)
     }
 })
   .then(data => displayMovies(data))
-  .catch(displayError);
+  .catch(error => {
+    displayError(error)
+});
 
 function createMoviesHTML (movie) {
     const imgPath = movie.poster_path;
@@ -78,18 +71,20 @@ form.addEventListener('submit', (event) => {
     } else if (checkbox === 'person') {
         urlMovieOrPerson = `https://api.themoviedb.org/3/search/person?query=${encodeURIComponent(searchInput)}&include_adult=false&language=en-US&page=1`;
     }
-    console.log(urlMovieOrPerson);
 
     fetch(urlMovieOrPerson, options)
         .then(response => {
             if (response.ok) {
                 return response.json();
             } else {
-                throw (response)
+                throw new Error (response.status)
             }
         })
         .then(data => {
             console.log(data);
+            if (data.results.length === 0) {
+                throw new Error (checkbox === 'movie' ? 'Movies not found' : 'Person not found');
+            }
 
             if (checkbox === 'movie') {
                 resultDiv.innerHTML = searchMovieHTML(data.results);
@@ -97,24 +92,27 @@ form.addEventListener('submit', (event) => {
                 resultDiv.innerHTML = searchPersonHTML(data.results);
             } 
         })
-        .catch(displayError);
+        .catch(error => {
+            displayError(error)
+        });
     form.reset();    
 });
+
+const standbyImage = 'img/standby-image.jpeg';
 
 function searchMovieHTML (movies) {
 
     let movieHTML = '';
 
     movies.forEach(movie => {
-        const imgPath = movie.poster_path;
-        const imgURL = `https://image.tmdb.org/t/p/w500${imgPath}`;
+        const imgPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : standbyImage;
         const movieTitle = movie.title;
         const releaseDate = movie.release_date;
         const movieOverview = movie.overview;
 
-        movieHTML = `
+        movieHTML += `
             <li class="movieList">
-                <img src="${imgURL}" class="allImages">
+                <img src="${imgPath}" alt="Image of ${movieTitle}" class="allImages">
                 <h2 class="movieTitle">${movieTitle}</h2>
                 <p class="movieOverview">${movieOverview}</p>
                 <p class="movieReleaseDate">${releaseDate}</p>
@@ -124,17 +122,15 @@ function searchMovieHTML (movies) {
     return movieHTML;
 }
 
+
 function searchPersonHTML (people) {
 
     let personHTML = '';
 
     people.forEach(person => {
-        const imgPath = person.profile_path;
-        const imgURL = `https://image.tmdb.org/t/p/w500${imgPath}`;
+        const imgPath = person.profile_path ? `https://image.tmdb.org/t/p/w500${person.profile_path}` : standbyImage;
         const personName = person.name;
         const knownForDepartment = person.known_for_department;
-        // .map - metod. skapar ny array av 'known-for'-arrayen, för varje objekt returneras
-        //        movie-title (Movie) eller movie-name (TV) och listar de separerat med komma
 
         let movie = [];
         let tv = [];
@@ -152,7 +148,7 @@ function searchPersonHTML (people) {
 
         personHTML += `
             <li class="personList">
-                <img src="${imgURL}" alt="Image of ${personName}" class="allImages">
+                <img src="${imgPath}" alt="Image of ${personName}" class="allImages">
                 <h2 class="personName">${personName}</h2>
                 <p class="knownForDepartment">${knownForDepartment}</p>
                 <p class="knownFor">Movie: ${movieList}</p>
@@ -177,20 +173,17 @@ function fetchTopRatedMovies () {
             if(response.ok) {
                 return response.json();
             } else {
-                throw ('Something went wrong...')
+                throw new Error (response.status)
             }
         })
         .then(response => {
-            // .slice - metod. skapar en ny array som innehåller endast elementen från index 0 - 10
             const displayTenMovies = response.results.slice(0, 10);
-            // .map - metod. för varje objekt i 'displayTenMovies' anropas 'createMovieHTML'
             const topRatedMoviesHTML = displayTenMovies.map(movie => createMoviesHTML(movie)).join('');
-            // .join - metod. efter .map skapat en array med HTML-strängar, 
-            //           kombinerar .join de till en enda lång sträng.
-            //        '' innebär att strängarna ska sammanfogas, inget ska separera dem
             resultDiv.innerHTML = topRatedMoviesHTML;
-        })
-        .catch(displayError);
+        }) 
+        .catch(error => {
+            displayError(error)
+        });
 }
 
 const mostPopularButton = document.querySelector('#mostPopular');
@@ -207,7 +200,7 @@ function fetchMostPopularMovies () {
             if(response.ok) {
                 return response.json();
             } else {
-                throw ('Something went wrong...')
+                throw new Error (response.status)
             }
         })
         .then(response => {
@@ -215,15 +208,20 @@ function fetchMostPopularMovies () {
             const mostPopularMoviesHTML = displayTenMovies.map(movie => createMoviesHTML(movie)).join('');
             resultDiv.innerHTML = mostPopularMoviesHTML;
         })
-        .catch(displayError);
+        .catch(error => {
+            displayError(error)
+        });
 }
 
 function displayError (error) {
     const errorMessage = document.querySelector('.errorMessage');
-    console.log(error);
-    if (error.message === 404) {
-        errorMessage.innerText = 'Movie or person not found... Please try again!'
+    let message;
+
+    if (error.message === 'Movies not found' || error.message === 'Person not found') {
+        message = 'Movie or person not found, try again!';
+        console.log(error.message);
     } else {
-        errorMessage.innerText = 'Something went wrong, try again later!';
+        message = 'Network error... try again later!';
     }
+    errorMessage.textContent = message;
 }
